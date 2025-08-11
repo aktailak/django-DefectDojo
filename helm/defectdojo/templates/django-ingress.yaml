@@ -13,19 +13,15 @@ metadata:
     {{- with .Values.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-{{- if or .Values.django.ingress.annotations .Values.gke.useGKEIngress }}
   annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80,"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
     {{- with .Values.django.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-    {{- if .Values.gke.useGKEIngress }}
-    kubernetes.io/ingress.class: gce
-    {{- if .Values.gke.useManagedCertificate }}
-    kubernetes.io/ingress.allow-http: "false"
-    networking.gke.io/managed-certificates: {{ $fullName }}-django
-    {{- end }}
-    {{- end }}
-{{- end }}
 spec:
   {{- if .Values.django.ingress.ingressClassName }}
   ingressClassName: {{ .Values.django.ingress.ingressClassName }}
