@@ -1,11 +1,11 @@
 ---
 # Global settings
 # create defectdojo specific secret
-createSecret: false
+createSecret: true
 # create redis secret in defectdojo chart, outside of redis chart
-createRedisSecret: false
+createRedisSecret: true
 # create postgresql secret in defectdojo chart, outside of postgresql chart
-createPostgresqlSecret: false
+createPostgresqlSecret: true
 # Track configuration (trackConfig): will automatically respin application pods in case of config changes detection
 # can be:
 # - disabled, default
@@ -120,7 +120,7 @@ tests:
 
 admin:
   user: admin
-  password:
+  password: 
   firstName: Administrator
   lastName: User
   mail: admin@defectdojo.local
@@ -408,9 +408,9 @@ postgresql:
   enabled: true
   auth:
     username: defectdojo
-    password: ""
+    password: defectdojopass
     database: defectdojo
-    existingSecret: defectdojo-postgresql-specific
+    existingSecret: ""
     secretKeys:
       adminPasswordKey: postgresql-postgres-password
       userPasswordKey: postgresql-password
@@ -488,7 +488,7 @@ redis:
   auth:
     existingSecret: defectdojo-redis-specific
     existingSecretPasswordKey: redis-password
-    password: ""
+    password: redispass
   architecture: standalone
   # To use an external Redis instance, set enabled to false and uncomment
   # the line below:
