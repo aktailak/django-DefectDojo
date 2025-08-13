@@ -23,6 +23,7 @@ metadata:
     alb.ingress.kubernetes.io/group.name: prod-eks-defectdojo-int
     alb.ingress.kubernetes.io/group.order: '1000'
     alb.ingress.kubernetes.io/load-balancer-name: prod-eks-defectdojo-int
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-1:355098476236:certificate/6f0627a1-1fb7-4f4a-89a8-83af5f74d996
     {{- with .Values.django.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
