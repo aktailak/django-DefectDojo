@@ -486,8 +486,8 @@ redis:
     enabled: false
     params: ''
   auth:
-    existingSecret: ""
-    existingSecretPasswordKey: ""
+    existingSecret: defectdojo-redis-specific-x-defectdojo-x-defectdojo
+    existingSecretPasswordKey: redis-password
     password: redispass
   architecture: standalone
   # To use an external Redis instance, set enabled to false and uncomment
