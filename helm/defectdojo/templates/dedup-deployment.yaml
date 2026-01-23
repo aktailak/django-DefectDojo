@@ -1,0 +1,53 @@
+{{- if .Values.deduplication.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "defectdojo.fullname" . }}-dedup
+  labels:
+    app: {{ include "defectdojo.name" . }}-dedup
+spec:
+  replicas: {{ .Values.deduplication.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: {{ include "defectdojo.name" . }}-dedup
+  template:
+    metadata:
+      labels:
+        app: {{ include "defectdojo.name" . }}-dedup
+    spec:
+      containers:
+        - name: dedup
+          image: "{{ .Values.deduplication.image.repository }}:{{ .Values.deduplication.image.tag }}"
+          imagePullPolicy: {{ .Values.deduplication.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.deduplication.service.port }}
+          env:
+            - name: REDIS_HOST
+              value: {{ .Values.deduplication.redis.host | quote }}
+            - name: REDIS_PORT
+              value: {{ .Values.deduplication.redis.port | quote }}
+            - name: DEFECTDOJO_API_URL
+              value: {{ .Values.deduplication.defectdojo.apiUrl | quote }}
+            - name: DEFECTDOJO_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: dojo-dedup-secrets
+                  key: DEFECTDOJO_API_TOKEN
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.deduplication.service.port }}
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.deduplication.service.port }}
+            initialDelaySeconds: 15
+          resources:
+{{ toYaml .Values.deduplication.resources | indent 12 }}
+{{- end }}
