@@ -546,7 +546,7 @@ deduplication:
     port: 8080
 
   redis:
-    host: defectdojo-redis-master
+    host: defectdojo-dedup-redis
     port: 6379
 
   defectdojo:
