@@ -1,0 +1,26 @@
+{{- if .Values.deduplication.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "defectdojo.fullname" . }}-dedup-redis
+  labels:
+    app: {{ include "defectdojo.name" . }}-dedup-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "defectdojo.name" . }}-dedup-redis
+  template:
+    metadata:
+      labels:
+        app: {{ include "defectdojo.name" . }}-dedup-redis
+    spec:
+      containers:
+        - name: redis
+          image: "{{ .Values.deduplication.redis.image.repository }}:{{ .Values.deduplication.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.deduplication.redis.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.deduplication.redis.port }}
+          resources:
+{{ toYaml .Values.deduplication.redis.resources | indent 12 }}
+{{- end }}
