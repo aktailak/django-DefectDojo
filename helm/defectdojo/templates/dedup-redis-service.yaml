@@ -1,0 +1,16 @@
+{{- if .Values.deduplication.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "defectdojo.fullname" . }}-dedup-redis
+  labels:
+    app: {{ include "defectdojo.name" . }}-dedup-redis
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ include "defectdojo.name" . }}-dedup-redis
+  ports:
+    - name: redis
+      port: {{ .Values.deduplication.redis.port }}
+      targetPort: {{ .Values.deduplication.redis.port }}
+{{- end }}
