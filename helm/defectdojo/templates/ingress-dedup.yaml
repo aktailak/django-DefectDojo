@@ -1,0 +1,33 @@
+{{- if .Values.deduplication.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "defectdojo.fullname" . }}-dedup
+  labels:
+    app.kubernetes.io/name: {{ include "defectdojo.name" . }}-dedup
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.django.ingress.ingressClassName | quote }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  {{- if .Values.django.ingress.activateTLS }}
+  tls:
+    - hosts:
+        - {{ .Values.host | quote }}
+      secretName: {{ .Values.django.ingress.secretName | quote }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.host | quote }}
+      http:
+        paths:
+          - path: /dedup(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "defectdojo.fullname" . }}-dedup
+                port:
+                  number: {{ .Values.deduplication.service.port }}
+{{- end }}
