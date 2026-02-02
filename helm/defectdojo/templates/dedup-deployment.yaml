@@ -38,6 +38,11 @@ spec:
                 secretKeyRef:
                   name: dojo-dedup-secrets
                   key: DEFECTDOJO_API_TOKEN
+            - name: DEDUP_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: dojo-dedup-secrets
+                  key: DEDUP_API_TOKEN  
           readinessProbe:
             httpGet:
               path: /ready
