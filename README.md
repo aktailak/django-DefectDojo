@@ -47,9 +47,9 @@ This is an **external integration component** that sits between secret scanners 
 ## Typical architecture
 
 Gitleaks (CI job)
-↓ JSON report
+-> JSON report
 Deduplication Service
-↓ filtered findings
+-> filtered findings
 DefectDojo API
 
 
