@@ -546,11 +546,24 @@ deduplication:
     port: 8080
 
   redis:
-    host: defectdojo-redis-master
+    host: defectdojo-dedup-redis
     port: 6379
 
   defectdojo:
     apiUrl: http://defectdojo-django:8000
+
+    image:
+      repository: redis
+      tag: "7-alpine"
+      pullPolicy: IfNotPresent
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
 
   resources:
     requests:

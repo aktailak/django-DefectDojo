@@ -1,0 +1,36 @@
+{{- if .Values.deduplication.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "defectdojo.fullname" . }}-dedup
+  labels:
+    app.kubernetes.io/name: {{ include "defectdojo.name" . }}-dedup
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    {{- with .Values.deduplication.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if .Values.deduplication.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.deduplication.ingress.ingressClassName }}
+  {{- end }}
+  {{- if .Values.deduplication.ingress.activateTLS }}
+  tls:
+    - hosts:
+        - {{ .Values.host | quote }}
+      {{- if .Values.deduplication.ingress.secretName }}
+      secretName: {{ .Values.deduplication.ingress.secretName | quote }}
+      {{- end }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.host | quote }}
+      http:
+        paths:
+          - path: /dedup
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "defectdojo.fullname" . }}-dedup
+                port:
+                  number: {{ .Values.deduplication.service.port }}
+{{- end }}

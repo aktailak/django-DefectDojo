@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dedup-to-redis
+  namespace: defectdojo
+spec:
+  podSelector:
+    matchLabels:
+      app: defectdojo-dedup-redis
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: defectdojo-dedup
+    ports:
+    - protocol: TCP
+      port: 6379
